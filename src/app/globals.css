@@ -1,0 +1,361 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fff7fa;
+  --foreground: #3d2a3b;
+  --fucsia: #a5146b;
+  --rosa: #ec4899;
+  --lila: #c4a7e7;
+  --crema: #fff4e8;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, monospace;
+}
+
+body {
+  background: linear-gradient(160deg, #fff7fa 0%, #fdeef8 40%, #f6efff 100%);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  background-attachment: fixed;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* ── fondo decorativo con brillos y manchas ───────────────── */
+
+.bg-decor {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bg-decor .blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  opacity: 0.45;
+  animation: blobFloat 16s ease-in-out infinite;
+}
+
+.blob--rosa {
+  width: 26rem;
+  height: 26rem;
+  left: -8rem;
+  top: -6rem;
+  background: radial-gradient(circle, #f9a8d4, transparent 65%);
+}
+
+.blob--violeta {
+  width: 30rem;
+  height: 30rem;
+  right: -10rem;
+  top: 20%;
+  background: radial-gradient(circle, #ddd6fe, transparent 65%);
+  animation-delay: -5s;
+}
+
+.blob--durazno {
+  width: 22rem;
+  height: 22rem;
+  left: 30%;
+  bottom: -10rem;
+  background: radial-gradient(circle, #fde3d4, transparent 65%);
+  animation-delay: -9s;
+}
+
+.blob--capuchino {
+  width: 16rem;
+  height: 16rem;
+  right: 12%;
+  bottom: -6rem;
+  background: radial-gradient(circle, #f7d7c9, transparent 65%);
+  animation-delay: -3s;
+}
+
+.stella {
+  position: absolute;
+  color: #eab9d8;
+  user-select: none;
+  animation: twinkle 3.2s ease-in-out infinite;
+}
+
+/* ── detalles de marca ────────────────────────────────────── */
+
+.text-gradient {
+  background: linear-gradient(120deg, #a5146b, #ec4899, #8b5cf6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.text-gradient-soft {
+  background: linear-gradient(120deg, #c0266d, #f472b6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 9999px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: #fbe5f0;
+  color: #a5146b;
+  border: 1px solid #f7c9e2;
+}
+
+.btn-sub {
+  transition: all 0.18s ease;
+}
+.btn-sub:hover {
+  filter: brightness(0.97);
+  transform: translateY(-1px);
+}
+.btn-sub:active {
+  transform: translateY(0);
+}
+
+.btn-grad {
+  background-image: linear-gradient(120deg, #a5146b, #ec4899, #a5146b);
+  background-size: 200% 200%;
+  animation: gradientX 6s ease infinite;
+  box-shadow: 0 12px 26px -10px rgba(236, 72, 153, 0.55);
+}
+.btn-grad:hover {
+  box-shadow: 0 16px 32px -10px rgba(236, 72, 153, 0.6);
+}
+.btn-grad:disabled {
+  box-shadow: none;
+  animation: none;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid #f6e3ee;
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 30px -18px rgba(165, 20, 107, 0.35);
+}
+
+.prose-guion {
+  white-space: pre-wrap;
+  line-height: 1.75;
+  font-size: 0.92rem;
+  color: #463a4c;
+}
+
+/* ── animaciones ──────────────────────────────────────────── */
+
+@keyframes blobFloat {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(3rem, -2rem) scale(1.08);
+  }
+  66% {
+    transform: translate(-2rem, 2rem) scale(0.95);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.8) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15) rotate(180deg);
+  }
+}
+
+@keyframes gradientX {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-up {
+  animation: fadeUp 0.35s ease both;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.pop-in {
+  animation: popIn 0.3s ease both;
+}
+
+@keyframes brainPulse {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-6px) scale(1.04);
+  }
+}
+.brain-core {
+  animation: brainPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes ringPulse {
+  0% {
+    transform: scale(0.75);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+.brain-ring {
+  position: absolute;
+  border-radius: 9999px;
+  border: 2px solid rgba(236, 72, 153, 0.45);
+  animation: ringPulse 2.4s ease-out infinite;
+}
+
+@keyframes spinSlow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin-slow {
+  animation: spinSlow 9s linear infinite;
+}
+.spin-reverse {
+  animation: spinSlow 14s linear infinite reverse;
+}
+
+@keyframes bubbleUp {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.9);
+  }
+  20%,
+  80% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-14px) scale(0.95);
+  }
+}
+.thought-chip {
+  animation: bubbleUp 5s ease-in-out infinite;
+}
+
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(-5px);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}
+.floaty {
+  animation: floaty 3.2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    #a5146b 0%,
+    #ec4899 25%,
+    #8b5cf6 50%,
+    #ec4899 75%,
+    #a5146b 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 6s linear infinite;
+}
+
+@keyframes wiggleIn {
+  0% {
+    opacity: 0;
+    transform: rotate(-2deg) scale(0.96);
+  }
+  60% {
+    transform: rotate(1deg) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+}
+.wiggle-in {
+  animation: wiggleIn 0.4s ease both;
+}
+
+/* scrollbar sutil */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #fdf3f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #f0c6de;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #e8a8cf;
+}

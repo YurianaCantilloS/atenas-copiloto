@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id              String         @id @default(cuid())
+  nombre          String
+  categoria       String
+  precio          Float?
+  promocion       String?
+  descripcion     String?
+  caracteristicas Json? // String[]
+  colores         Json? // String[]
+  alPorMayor      Boolean        @default(false)
+  disponible      Boolean        @default(true)
+  createdAt       DateTime       @default(now())
+  contents        ContentPost[]
+}
+
+model ContentPost {
+  id               String    @id @default(cuid())
+  request          String
+  objetivo         String
+  objetivoClave    String?
+  audiencia        String
+  formato          String
+  productoId       String?
+  productoNombre   String?
+  producto         Product?  @relation(fields: [productoId], references: [id])
+  concepto         String
+  pilar            String
+  anguloCreativo   String
+  estructura       String
+  hook             String
+  hooks            Json // string[]
+  cta              String
+  caption          String
+  storyboard       Json?
+  serie            String?
+  bloque           String?
+  resultadoRaw     Json // estructura completa del output (sección 21)
+  publicado        Boolean   @default(false)
+  fechaPublicacion DateTime?
+  enUso            Boolean   @default(false)
+  favorito         Boolean   @default(false)
+  vistas           Int?
+  likes            Int?
+  comentarios      Int?
+  compartidos      Int?
+  guardados        Int?
+  metricas         Json?
+  createdAt        DateTime  @default(now())
+
+  @@index([objetivo])
+  @@index([objetivoClave])
+  @@index([productoId])
+  @@index([enUso])
+  @@index([favorito])
+}
