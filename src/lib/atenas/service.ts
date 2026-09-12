@@ -59,7 +59,7 @@ async function guardarContenido(
 export async function generarContenido(
   request: GenerateRequest
 ): Promise<ResultadoGeneracion> {
-  const client = getClient();
+  let client = getClient();
 
   if (!client) {
     const propuesta = propuestaDemo(request);
@@ -74,6 +74,27 @@ export async function generarContenido(
     };
   }
 
+  let intentos = 0;
+  while (true) {
+    try {
+      return await generarConCliente(client, request);
+    } catch (e) {
+      const esConexion =
+        e instanceof Error && e.message.includes("Connection error.");
+      if (esConexion && intentos < 2) {
+        intentos += 1;
+        client = getClient() ?? client;
+        continue;
+      }
+      throw e;
+    }
+  }
+}
+
+async function generarConCliente(
+  client: NonNullable<ReturnType<typeof getClient>>,
+  request: GenerateRequest
+): Promise<ResultadoGeneracion> {
   const memoria = await getMemoria(60);
 
   let propuesta: Propuesta;

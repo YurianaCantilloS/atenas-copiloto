@@ -3,7 +3,11 @@ import OpenAI from "openai";
 export function getClient(): OpenAI | null {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return null;
-  return new OpenAI({ apiKey });
+  return new OpenAI({
+    apiKey,
+    maxRetries: 4,
+    timeout: 120000,
+  });
 }
 
 export function getModelo(): string {
