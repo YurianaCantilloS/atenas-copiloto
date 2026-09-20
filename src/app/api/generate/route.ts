@@ -12,6 +12,10 @@ export async function POST(req: Request) {
     const resultado = await generarContenido(parsed);
     return NextResponse.json(resultado);
   } catch (e) {
+    const enmascarar = (s: string) =>
+      s
+        .replace(/sk-proj-[A-Za-z0-9_-]+/g, "sk-proj-••••••")
+        .replace(/Bearer\s+\S+/g, "Bearer (clave oculta)");
     const causa = e instanceof Error && (e as { cause?: { message?: string } }).cause?.message;
     let mensaje =
       e instanceof Error
@@ -19,8 +23,8 @@ export async function POST(req: Request) {
           ? "Error de base de datos."
           : e.message
         : "Error inesperado.";
-    if (causa) mensaje += ` (causa: ${causa})`;
+    if (causa) mensaje += ` (causa: ${enmascarar(causa)})`;
     console.error("Error en /api/generate:", e);
-    return NextResponse.json({ error: mensaje }, { status: 500 });
+    return NextResponse.json({ error: enmascarar(mensaje) }, { status: 500 });
   }
 }
