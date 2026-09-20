@@ -732,7 +732,7 @@ function buildPdf(p: Propuesta): Promise<Uint8Array> {
   })();
 }
 
-function sanitizar(texto: string, font: { encodeText: (t: string) => Uint8Array }): string {
+function sanitizar(texto: string, font: { encodeText: (t: string) => unknown }): string {
   let res = "";
   for (const ch of texto) {
     try {
@@ -748,7 +748,7 @@ function sanitizar(texto: string, font: { encodeText: (t: string) => Uint8Array 
 function wrap(texto: string, font: { widthOfTextAtSize: (t: string, s: number) => number }, size: number, maxWidth: number): string[] {
   const out: string[] = [];
   for (const para of texto.split(/\r?\n/)) {
-    const limpio = sanitizar(para, font as unknown as { encodeText: (t: string) => Uint8Array });
+    const limpio = sanitizar(para, font as unknown as { encodeText: (t: string) => unknown });
     const palabras = limpio.split(/\s+/).filter(Boolean);
     if (palabras.length === 0) {
       out.push("");
