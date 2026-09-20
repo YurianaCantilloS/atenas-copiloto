@@ -2,6 +2,7 @@ import OpenAI from "openai";
 import { propuestaSchema } from "./schemas";
 import { SYSTEM_PROMPT } from "./systemPrompt";
 import { getModelo } from "./openai";
+import { estiloReferencia } from "./estiloReferencia";
 import type { GenerateRequest, Propuesta } from "./types";
 import type { MemoriaContenidos } from "./memory";
 
@@ -21,6 +22,7 @@ function buildUserPrompt(request: GenerateRequest, memoria: MemoriaContenidos): 
         imagen_referencia: request.imagenReferencia ? "adjunta (analízala: estilo, escenario, objetos, colores, texto visible, vibra)" : null,
       },
       memoria_para_evitar_repeticion: memoria,
+      referencia_de_estilo: estiloReferencia.activo ? estiloReferencia : null,
     },
     null,
     2
