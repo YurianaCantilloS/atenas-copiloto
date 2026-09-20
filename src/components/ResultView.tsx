@@ -32,6 +32,7 @@ export default function ResultView({
   const [favorito, setFavorito] = useState(false);
   const [guardandoFav, setGuardandoFav] = useState(false);
   const [descargando, setDescargando] = useState(false);
+  const [errorPdf, setErrorPdf] = useState<string | null>(null);
   const [hooksFav, setHooksFav] = useState<string[]>(() => {
     try {
       return JSON.parse(localStorage.getItem(HOOKS_FAV_KEY) || "[]");
@@ -69,16 +70,22 @@ export default function ResultView({
   const descargar = async () => {
     if (descargando) return;
     setDescargando(true);
+    setErrorPdf(null);
     try {
       const bytes = await buildPdf(p);
       const url = URL.createObjectURL(new Blob([bytes as Uint8Array<ArrayBuffer>], { type: "application/pdf" }));
       const a = document.createElement("a");
       a.href = url;
       a.download = `propuesta-atena-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.pdf`;
+      a.style.display = "none";
       document.body.appendChild(a);
       a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+      setTimeout(() => {
+        a.remove();
+        URL.revokeObjectURL(url);
+      }, 1000);
+    } catch (e) {
+      setErrorPdf(e instanceof Error ? e.message : "No se pudo generar el PDF.");
     } finally {
       setDescargando(false);
     }
@@ -107,6 +114,7 @@ export default function ResultView({
             <Download size={14} />
             {descargando ? "Generando PDF…" : "Descargar PDF"}
           </button>
+          {errorPdf && <span className="w-full text-xs font-semibold text-red-600">{errorPdf}</span>}
           <button
             type="button"
             onClick={toggleFavorito}
