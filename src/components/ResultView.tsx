@@ -539,9 +539,18 @@ function buildPdf(p: Propuesta): Promise<Uint8Array> {
 
     let page = pdf.addPage([PAGE.w, PAGE.h]);
     let y = PAGE.h - 100;
+    let numPagina = 1;
+
+    const pie = () => {
+      page.drawLine({ start: { x: MARGEN, y: 50 }, end: { x: PAGE.w - MARGEN, y: 50 }, thickness: 0.5, color: ROSA });
+      page.drawText("Generado con Copiloto creativo · Atenas Style Shop", { x: MARGEN, y: 36, size: 7, font: helvetica, color: GRIS });
+      const pg = `Pág. ${numPagina}`;
+      page.drawText(pg, { x: PAGE.w - MARGEN - helvetica.widthOfTextAtSize(pg, 7), y: 36, size: 7, font: helvetica, color: GRIS });
+    };
 
     const nuevaPagina = () => {
       page = pdf.addPage([PAGE.w, PAGE.h]);
+      numPagina += 1;
       // Cabecera de marca en cada página
       page.drawRectangle({ x: 0, y: PAGE.h - 46, width: PAGE.w, height: 46, color: MAGENTA });
       page.drawText("PROPUESTA DE CONTENIDO", { x: MARGEN, y: PAGE.h - 43, size: 7.5, font: bold, color: rgb(1, 1, 1) });
@@ -554,6 +563,7 @@ function buildPdf(p: Propuesta): Promise<Uint8Array> {
         color: rgb(1, 1, 1),
       });
       page.drawLine({ start: { x: MARGEN, y: PAGE.h - 60 }, end: { x: PAGE.w - MARGEN, y: PAGE.h - 60 }, thickness: 0.75, color: ROSA });
+      pie();
       return PAGE.h - 84;
     };
 
@@ -567,15 +577,12 @@ function buildPdf(p: Propuesta): Promise<Uint8Array> {
       y -= 16;
     };
 
-    const heading = (texto: string) => {
-      asegurarEspacio(60);
-      drawAcento();
-      page.drawText(sanitizar(texto, bold), { x: MARGEN + 8, y: y - 12, size: 12, font: bold, color: MAGENTA });
-      y -= 26;
-    };
-
-    const drawAcento = () => {
-      page.drawRectangle({ x: MARGEN, y: y - 17, width: 3.2, height: 15, color: MAGENTA });
+    const heading = (num: string, texto: string) => {
+      asegurarEspacio(62);
+      page.drawRectangle({ x: MARGEN, y: y - 19, width: ANCHO, height: 24, color: rgb(0.96, 0.93, 0.96), opacity: 0.75 });
+      page.drawRectangle({ x: MARGEN, y: y - 19, width: 3.6, height: 24, color: MAGENTA });
+      page.drawText(sanitizar(`${num}  ${texto}`, bold), { x: MARGEN + 12, y: y - 14, size: 11, font: bold, color: MAGENTA });
+      y -= 33;
     };
 
     const body = (texto: string, estilo: "regular" | "quote" = "regular") => {
@@ -596,20 +603,35 @@ function buildPdf(p: Propuesta): Promise<Uint8Array> {
       y -= 8;
     };
 
-    const bullets = (items: string[]) => {
+    const bullets = (items: string[], numerada = false) => {
       const fuente = helvetica;
       const tamaño = 10;
-      for (const item of items) {
-        const lapos = wrap(item, fuente, tamaño, ANCHO - 14);
+      items.forEach((item, idx) => {
+        const prefijo = numerada ? `${idx + 1}.` : "•";
+        const anchoNum = numerada ? 17 : 13;
+        const lapos = wrap(item, fuente, tamaño, ANCHO - anchoNum - 6);
         asegurarEspacio(lapos.length * LINEA_ALTA + 4);
-        page.drawText("•", { x: MARGEN, y: y - 11, size: tamaño, font: bold, color: MAGENTA });
+        page.drawText(prefijo, { x: MARGEN, y: y - 11, size: tamaño, font: bold, color: MAGENTA });
         for (const linea of lapos) {
-          page.drawText(linea, { x: MARGEN + 12, y: y - 11, size: tamaño, font: fuente, color: DARK, maxWidth: ANCHO - 12 });
+          page.drawText(linea, { x: MARGEN + anchoNum, y: y - 11, size: tamaño, font: fuente, color: DARK, maxWidth: ANCHO - anchoNum });
           y -= LINEA_ALTA;
         }
         y -= 2;
-      }
+      });
       y -= 8;
+    };
+
+    const campoEtiquetado = (label: string, texto: string) => {
+      const LBL = 54;
+      const lapos = wrap(texto, helvetica, 10, ANCHO - LBL - 8);
+      const alto = Math.max(lapos.length, 1) * 13 + 6;
+      asegurarEspacio(alto);
+      page.drawText(sanitizar(label.toUpperCase(), bold), { x: MARGEN, y: y - 8.5, size: 7, font: bold, color: MAGENTA });
+      for (const linea of lapos) {
+        page.drawText(linea, { x: MARGEN + LBL, y: y - 8.5, size: 10, font: helvetica, color: DARK });
+        y -= 13;
+      }
+      y -= 4;
     };
 
     const claveValor = (claves: [string, string][]) => {
@@ -660,74 +682,73 @@ function buildPdf(p: Propuesta): Promise<Uint8Array> {
       ["Objetivo", p.objetivo],
       ["Audiencia", p.audiencia],
       ["Pilar", p.pilar],
+      ["Ángulo creativo", p.anguloCreativo],
+      ["Estructura", p.estructura.nombre],
     ]);
+    pie();
 
-    heading("Ángulo creativo");
+    heading("01", "Ángulo creativo");
     body(p.anguloCreativo);
 
-    heading(`Estructura · ${p.estructura.nombre}`);
+    heading("02", `Estructura · ${p.estructura.nombre}`);
     body(p.estructura.razon);
 
-    heading("Hook recomendado");
+    heading("03", "Hook recomendado");
     body(`“${p.hookRecomendado}”`, "quote");
 
     const otrosHooks = p.hooks.filter((h) => h !== p.hookRecomendado);
     if (otrosHooks.length > 0) {
-      heading("Otras opciones de hook");
-      bullets(otrosHooks);
+      heading("04", "Otras opciones de hook");
+      bullets(otrosHooks, true);
     }
 
-    heading("Guion completo");
+    heading("05", "Guion completo");
     body(p.guion);
 
     if (p.storyboard.length > 0) {
-      heading("Storyboard para grabar");
+      heading("06", "Storyboard para grabar");
       for (const shot of p.storyboard) {
-        const sub = `${shot.toma} · ${shot.tiempo} · ${shot.plano}`;
-        asegurarEspacio(80);
-        page.drawText(sanitizar(sub, bold), { x: MARGEN, y: y - 9, size: 10.5, font: bold, color: DARK });
-        y -= 16;
-        bullets([
-          `Visual: ${shot.visual}`,
-          `Acción: ${shot.accion}`,
-          `Voz: ${shot.voz}`,
-          `Texto en pantalla: ${shot.textoPantalla}`,
-        ]);
+        const sub = sanitizar(`${shot.toma} · ${shot.tiempo} · ${shot.plano}`, bold);
+        asegurarEspacio(150);
+        page.drawRectangle({ x: MARGEN, y: y - 12, width: ANCHO, height: 16, color: rgb(0.94, 0.83, 0.89), opacity: 0.5 });
+        page.drawText(sub, { x: MARGEN + 7, y: y - 10.5, size: 9.5, font: bold, color: DARK });
+        y -= 24;
+        campoEtiquetado("Visual", shot.visual);
+        campoEtiquetado("Acción", shot.accion);
+        campoEtiquetado("Voz", shot.voz);
+        campoEtiquetado("Texto pantalla", shot.textoPantalla);
+        separador();
       }
     }
 
     if (p.textosPantalla.length > 0) {
-      heading("Textos en pantalla");
-      bullets(p.textosPantalla);
+      heading("07", "Textos en pantalla");
+      bullets(p.textosPantalla, true);
     }
 
-    heading("Llamado a la acción (CTA)");
+    heading("08", "Llamado a la acción (CTA)");
     body(p.cta);
 
-    heading("Caption");
+    heading("09", "Caption");
     body(p.caption);
 
     if (p.portadas.length > 0) {
-      heading("Texto de portada");
-      bullets(p.portadas.map((port, i) => `${i + 1}. ${port}`));
+      heading("10", "Texto de portada");
+      bullets(p.portadas.map((port, i) => `${i + 1}. ${port}`), true);
     }
 
-    heading("Idea de audio / ambiente");
+    heading("11", "Idea de audio / ambiente");
     body(p.audio);
 
-    heading("Variaciones del concepto");
+    heading("12", "Variaciones del concepto");
     bullets([`Variación A: ${p.variacionA}`, `Variación B: ${p.variacionB}`]);
 
     if (p.serie) {
-      heading("Oportunidad de serie");
+      heading("13", "Oportunidad de serie");
       body(p.serie);
     }
 
-    // Pie en la última página
-    y -= 16;
-    page.drawLine({ start: { x: MARGEN, y: 52 }, end: { x: PAGE.w - MARGEN, y: 52 }, thickness: 0.5, color: ROSA });
-    page.drawText("Generado con Copiloto creativo · Atenas Style Shop", { x: MARGEN, y: 38, size: 7, font: helvetica, color: GRIS });
-
+    y -= 8;
     return pdf.save();
   })();
 }
