@@ -156,16 +156,18 @@ export default function AtenasApp() {
 
         <main>
           {tab === "nueva" && (
-            <div className="mx-auto max-w-3xl space-y-6">
+            <div className="space-y-6">
               {error && (
-                <div className="card fade-up border-red-200 bg-red-50/90 px-4 py-3 text-sm text-red-700">
+                <div className="card fade-up mx-auto max-w-3xl border-red-200 bg-red-50/90 px-4 py-3 text-sm text-red-700">
                   {error}
                 </div>
               )}
               {cargando ? (
-                <CreativeBrain />
+                <div className="mx-auto max-w-2xl space-y-6">
+                  <CreativeBrain />
+                </div>
               ) : resultado && !editando ? (
-                <div ref={resultadoRef}>
+                <div ref={resultadoRef} className="mx-auto max-w-7xl">
                   <ResultView
                     resultado={resultado}
                     onGenerarOtra={generarOtra}
@@ -174,14 +176,16 @@ export default function AtenasApp() {
                   />
                 </div>
               ) : (
-                <GeneratorForm
-                  key={editando ? "editar" : "nueva"}
-                  onGenerar={generar}
-                  cargando={cargando}
-                  ultimoResultado={resultado}
-                  solicitudInicial={editando ? ultimaSolicitud : null}
-                  modoEdicion={editando}
-                />
+                <div className="mx-auto max-w-3xl space-y-6">
+                  <GeneratorForm
+                    key={editando ? "editar" : "nueva"}
+                    onGenerar={generar}
+                    cargando={cargando}
+                    ultimoResultado={resultado}
+                    solicitudInicial={editando ? ultimaSolicitud : null}
+                    modoEdicion={editando}
+                  />
+                </div>
               )}
             </div>
           )}

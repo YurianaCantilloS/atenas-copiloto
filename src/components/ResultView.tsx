@@ -92,9 +92,9 @@ export default function ResultView({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="grid gap-4 lg:grid-cols-2">
       {/* Barra de acciones del documento */}
-      <div className="card fade-up flex flex-wrap items-center justify-between gap-3 p-4">
+      <div className="card fade-up lg:col-span-2 flex flex-wrap items-center justify-between gap-3 p-4">
         <div className="flex items-center gap-2.5">
           <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#fbe5f0] to-[#ece0fa]">
             <FileText size={18} className="text-[#a5146b]" />
@@ -157,19 +157,19 @@ export default function ResultView({
       </div>
 
       {demo && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 lg:col-span-2">
           Resultado de ejemplo (modo demo). Configura <code className="rounded bg-amber-100 px-1">OPENAI_API_KEY</code> en
           <code className="rounded bg-amber-100 px-1">.env</code> para generación real.
         </div>
       )}
       {revisada && (
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-medium text-emerald-700">
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-medium text-emerald-700 lg:col-span-2">
           Se aplicó una revisión interna para mejorar la propuesta.
         </div>
       )}
 
       {/* Resumen */}
-      <section className="card fade-up p-5">
+      <section className="card fade-up p-5 lg:col-span-2">
         <div className="mb-3 flex flex-wrap items-center gap-2">
           <span className="chip">Objetivo: {p.objetivo}</span>
           <span className="chip">Audiencia: {p.audiencia}</span>
@@ -208,7 +208,7 @@ export default function ResultView({
       <HooksSection title="Hooks (5–8, de mecanismos diferentes)" hooks={p.hooks} recomendado={p.hookRecomendado} hooksFav={hooksFav} onToggleFav={toggleHookFav} />
 
       {/* Guion */}
-      <section className="card fade-up p-5">
+      <section className="card fade-up p-5 lg:col-span-2">
         <div className="mb-2 flex items-center justify-between gap-2">
           <h3 className="text-sm font-bold uppercase tracking-wide text-[#a5146b]">Guion completo</h3>
           <CopyButton text={p.guion} label="Copiar guion" />
@@ -217,7 +217,7 @@ export default function ResultView({
       </section>
 
       {/* Storyboard */}
-      <section className="card fade-up p-5">
+      <section className="card fade-up p-5 lg:col-span-2">
         <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-[#a5146b]">
           Storyboard <span className="font-medium normal-case text-[#8a7f92]">· tomas para grabar con celular</span>
         </h3>
@@ -269,7 +269,7 @@ export default function ResultView({
       )}
 
       {/* CTA + captions + portadas + audio */}
-      <div className="grid gap-4 lg:grid-cols-2">
+<div className="grid gap-4 lg:col-span-2 lg:grid-cols-2">
         <section className="card fade-up p-5">
           <h3 className="mb-1 text-sm font-bold uppercase tracking-wide text-[#a5146b]">CTA</h3>
           <p className="text-sm text-[#463a4c]">{p.cta}</p>
@@ -331,14 +331,14 @@ export default function ResultView({
 
       {/* Evaluación interna */}
       {evaluacion && (
-        <section className="card fade-up p-5">
+        <section className="card fade-up p-5 lg:col-span-2">
           <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-[#a5146b]">Evaluación interna</h3>
           <EvaluacionScore eval={evaluacion} />
         </section>
       )}
 
       {contenidoId && (
-        <p className="pb-4 text-center text-xs text-[#b3a8bd]">
+        <p className="pb-4 text-center text-xs text-[#b3a8bd] lg:col-span-2">
           Guardado en el historial · id {contenidoId.slice(0, 8)}
         </p>
       )}

@@ -106,7 +106,7 @@ export default function HistoryPanel({
             : "Sin resultados para tu búsqueda o filtros."}
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="grid gap-3 lg:grid-cols-2">
           {filtrados.map((it) => (
             <HistoryCard key={it.id} item={it} expandido={expandido === it.id} onToggle={() => setExpandido(expandido === it.id ? null : it.id)} onPatch={patch} onEliminar={() => eliminar(it)} />
           ))}
