@@ -570,7 +570,7 @@ function buildPdf(p: Propuesta): Promise<Uint8Array> {
     const heading = (texto: string) => {
       asegurarEspacio(60);
       drawAcento();
-      page.drawText(texto, { x: MARGEN + 8, y: y - 12, size: 12, font: bold, color: MAGENTA });
+      page.drawText(sanitizar(texto, bold), { x: MARGEN + 8, y: y - 12, size: 12, font: bold, color: MAGENTA });
       y -= 26;
     };
 
@@ -685,7 +685,7 @@ function buildPdf(p: Propuesta): Promise<Uint8Array> {
       for (const shot of p.storyboard) {
         const sub = `${shot.toma} · ${shot.tiempo} · ${shot.plano}`;
         asegurarEspacio(80);
-        page.drawText(sub, { x: MARGEN, y: y - 9, size: 10.5, font: bold, color: DARK });
+        page.drawText(sanitizar(sub, bold), { x: MARGEN, y: y - 9, size: 10.5, font: bold, color: DARK });
         y -= 16;
         bullets([
           `Visual: ${shot.visual}`,
@@ -732,10 +732,24 @@ function buildPdf(p: Propuesta): Promise<Uint8Array> {
   })();
 }
 
+function sanitizar(texto: string, font: { encodeText: (t: string) => Uint8Array }): string {
+  let res = "";
+  for (const ch of texto) {
+    try {
+      font.encodeText(ch);
+      res += ch;
+    } catch {
+      res += ch === "→" || ch === "←" ? "->" : "?";
+    }
+  }
+  return res;
+}
+
 function wrap(texto: string, font: { widthOfTextAtSize: (t: string, s: number) => number }, size: number, maxWidth: number): string[] {
   const out: string[] = [];
   for (const para of texto.split(/\r?\n/)) {
-    const palabras = para.split(/\s+/).filter(Boolean);
+    const limpio = sanitizar(para, font as unknown as { encodeText: (t: string) => Uint8Array });
+    const palabras = limpio.split(/\s+/).filter(Boolean);
     if (palabras.length === 0) {
       out.push("");
       continue;
